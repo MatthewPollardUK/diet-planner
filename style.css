@@ -1,0 +1,52 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+
+
+body {
+  font-size: 20px;
+}
+
+
+h1.main-title {
+position: relative;
+text-align: center;
+margin-top: 30px;
+font-size: 4rem;
+}
+form.search-diets-form {
+  border: 2px solid red;
+   display:flex;
+  justify-content: center;
+}
+
+
+main.main-area {
+  display: flex;
+    flex-direction: column;
+  justify-content: flex-start;
+}
+
+.search-results-container {
+  border: 2px solid red;
+  min-height: 50vh;
+  width: 100%;
+}
+
+.seven-day-container {
+  border: 2px solid blue;
+  min-height: 30vh;
+  width: 100%;
+}
+
+
+@media (min-width: 600px) {
+  main.main-area {
+    border: 10px solid green;
+  }
+}
