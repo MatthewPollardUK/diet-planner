@@ -1,6 +1,7 @@
 
 const searchForm = document.querySelector('#search-form');
-const searchField  = document.querySelector('input[name="search"]')
+const searchField  = document.querySelector('input[name="search"]');
+const searchResultsContain = document.querySelector('.search-results-container');
 
 
 
@@ -33,24 +34,29 @@ let resultParsed = JSON.parse(result);
 //console.log(resultParsed.hits);
 let hitsFromSearch = resultParsed.hits;
 
-
 displayResults(hitsFromSearch)
-
-
-
  })
 
  .catch(error => console.log('error', error));
 }
 
 //dataRetrieve();
-const displayResults = (res) => {
+const displayResults = (recipies) => {
 
 //console.log(`this is here`);
 //console.log(res);
 for (var i = 0, len = 5; i < len; i++ ){
-  console.log(`Another recipe:`);
-  console.log(res[i]['recipe']['label']);
+let caloriesRecipe = Math.floor(recipies[i].recipe.calories / recipies[i].recipe.yield);  //number
+console.log(recipies[i]);
+
+
+searchResultsContain.innerHTML +=
+`<div> ${recipies[i].recipe.label}    <img src=${recipies[i].recipe.images.SMALL.url} width=${recipies[i].recipe.images.SMALL.width} height=${recipies[i].recipe.images.SMALL.height} > </div>
+ <div> <b> Calories: </b> ${caloriesRecipe} <a href =${recipies[i].recipe.url}> View recipe </a> </div>
+ <div> col3  </div>`;
+
+//  console.log(`Another recipe:`);
+ //console.log(recipies[i]);
 }
 
 }; // close displayresults

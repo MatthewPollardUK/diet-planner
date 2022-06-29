@@ -36,6 +36,8 @@ main.main-area {
   border: 2px solid red;
   min-height: 50vh;
   width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
 }
 
 .seven-day-container {
@@ -48,5 +50,17 @@ main.main-area {
 @media (min-width: 600px) {
   main.main-area {
     border: 10px solid green;
+  }
+  .search-results-container {
+  grid-template-columns: 1fr 1fr;
+}
+
+
+@media (min-width: 800px) {
+  main.main-area {
+    border: 10px solid blue;
+  }
+  .search-results-container {
+    grid-template-columns: 1fr 1fr 1fr;
   }
 }
