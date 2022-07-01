@@ -64,3 +64,8 @@ main.main-area {
     grid-template-columns: 1fr 1fr 1fr;
   }
 }
+
+
+.border-red {
+  border: 5px solid red !important;
+}

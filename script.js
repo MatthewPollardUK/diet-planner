@@ -38,14 +38,14 @@ let resultParsed = JSON.parse(result);
 //console.log(resultParsed.hits);
 let hitsFromSearch = resultParsed.hits;
 
-displayResults(hitsFromSearch)
+displayResults(hitsFromSearch, searchVal)
  })
 
  .catch(error => console.log('error', error));
 }
 
 //dataRetrieve();
-const displayResults = (recipies) => {
+const displayResults = (recipies, searchVal) => {
 
 //console.log(`this is here`);
 //console.log(res);
@@ -57,7 +57,7 @@ let caloriesRecipe = Math.floor(recipies[i].recipe.calories / recipies[i].recipe
 searchResultsContain.innerHTML +=
 `<div> ${recipies[i].recipe.label}    <img src=${recipies[i].recipe.images.SMALL.url} width=${recipies[i].recipe.images.SMALL.width} height=${recipies[i].recipe.images.SMALL.height} > </div>
  <div> <b> Calories: </b> ${caloriesRecipe} <a href =${recipies[i].recipe.url}> View recipe </a> </div>
- <div class="recipe-checkbox"> <input type="checkbox" data-checkbox="${i}" id="recipe-${i}" name="recipe-${i}"> <label for="recipe-${i}"> Add to 7 day calendar </label> </div>`;
+ <div class="recipe-checkbox"> <input type="checkbox" data-checkbox="${i}" id="${searchVal}-recipe-${i}" name="recipe-${i}"> <label for="recipe-${i}"> Add to 7 day calendar </label> </div>`
 
 } // close for
 
@@ -67,19 +67,47 @@ searchResultsContain.innerHTML +=
        if (e.target.checked) {
          let caloriesCurrentRecipe = Math.floor(recipies[currentRecipe].recipe.calories / recipies[currentRecipe].recipe.yield);
 sevenDayContainer.innerHTML +=
-` <div class="recipe" id="IDrecipe-${currentRecipe}">
+` <div class="recipe" id="${searchVal}-recipe-${currentRecipe}">
 ${recipies[currentRecipe].recipe.label}
 <a href =${recipies[currentRecipe].recipe.url}> View recipe </a>
 <b> calories: </b> ${caloriesCurrentRecipe}
- </div>   `
-
+<button type="button" class="button-remove-recipe" id="${searchVal}-recipe-${currentRecipe}" >Remove</button>
+ </div>   `;
 } else {
-const removeRecipe = document.getElementById(`IDrecipe-${currentRecipe}`);
-removeRecipe.remove();
-}  // close if else
+const recipeId  = e.target.id;
+const sevenDayRecipe = document.querySelector(`#seven-day #${recipeId}`);
+if(sevenDayRecipe !== null ){
+sevenDayRecipe.remove();
+} //close if
+
+}
 }) // close event listener
 ) // close for each
-
-
-
 }; // close displayresults
+
+
+
+// remove buttons in 7 day container
+// if button clicked then get all the buttons, then cycle through them to remove clicked content
+sevenDayContainer.addEventListener('mouseenter', (e) => {
+
+const removeRecipeButton = document.querySelectorAll('.button-remove-recipe');
+//console.log(removeRecipeButton);
+  if (removeRecipeButton.length > 0){
+removeRecipeButton.forEach(removeButton => removeButton.addEventListener('click', (remE) => {
+remE.srcElement.parentElement.remove();
+const recipeId = remE.target.id;
+const inputRecipe = document.querySelector(`.search-results-container #${recipeId}`);
+if (inputRecipe.checked = true){
+  inputRecipe.checked = false;
+};
+
+
+//console.log(tickBox);
+
+}))
+
+  } else {
+    console.log('NO remove buttons'); // should this be removed???
+  }
+})
