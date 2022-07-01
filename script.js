@@ -70,7 +70,7 @@ sevenDayContainer.innerHTML +=
 ` <div class="recipe" id="IDrecipe-${currentRecipe}">
 ${recipies[currentRecipe].recipe.label}
 <a href =${recipies[currentRecipe].recipe.url}> View recipe </a>
-<b> Calories: </b> ${caloriesCurrentRecipe}
+<b> calories: </b> ${caloriesCurrentRecipe}
  </div>   `
 
 } else {
