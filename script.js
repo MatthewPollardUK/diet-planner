@@ -63,13 +63,19 @@ searchResultsContain.innerHTML +=
 
   let resultsCheckboxes = document.querySelectorAll('.recipe-checkbox > input[type="checkbox"]');
      resultsCheckboxes.forEach(recipeCheckbox => recipeCheckbox.addEventListener('change', (e) => {
+  let currentRecipe = e.target.dataset.checkbox;
        if (e.target.checked) {
-        let currentRecipe = e.target.dataset.checkbox;
+         let caloriesCurrentRecipe = Math.floor(recipies[currentRecipe].recipe.calories / recipies[currentRecipe].recipe.yield);
 sevenDayContainer.innerHTML +=
-` <div class="recipe">${recipies[currentRecipe].recipe.label}  </div>   `
+` <div class="recipe" id="IDrecipe-${currentRecipe}">
+${recipies[currentRecipe].recipe.label}
+<a href =${recipies[currentRecipe].recipe.url}> View recipe </a>
+<b> Calories: </b> ${caloriesCurrentRecipe}
+ </div>   `
 
 } else {
-  console.log(`Checkbox is not checked: ${e.target}`);
+const removeRecipe = document.getElementById(`IDrecipe-${currentRecipe}`);
+removeRecipe.remove();
 }  // close if else
 }) // close event listener
 ) // close for each
