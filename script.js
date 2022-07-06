@@ -4,7 +4,7 @@ const searchField  = document.querySelector('input[name="search"]');
 const searchResultsContain = document.querySelector('.search-results-container');
 const sevenDayContainer = document.querySelector('.seven-day-container');
 
-
+let searchVal;
 
 
 
@@ -12,12 +12,13 @@ const sevenDayContainer = document.querySelector('.seven-day-container');
 let searchFormSubmitted = (e) => {
   e.preventDefault();
   //let myresult = e.elements["search"].value;
- let searchVal = searchField.value;
+searchVal = searchField.value;
  //console.log(`this is the searchval: ${searchVal}`);
 searchResultsContain.innerHTML = '';
  dataRetrieve(searchVal);
 
 }
+
 
 //get input from search form
 searchForm.addEventListener('submit', searchFormSubmitted )
@@ -61,26 +62,73 @@ searchResultsContain.innerHTML +=
 
 } // close for
 
+
+
+
   let resultsCheckboxes = document.querySelectorAll('.recipe-checkbox > input[type="checkbox"]');
      resultsCheckboxes.forEach(recipeCheckbox => recipeCheckbox.addEventListener('change', (e) => {
   let currentRecipe = e.target.dataset.checkbox;
+     const noRecipesinCal = sevenDayContainer.querySelectorAll('.recipe').length;
+       const recipes = searchResultsContain.querySelectorAll('.recipe-checkbox input');
+  const searchFormSelect =     searchForm.querySelector('input');
+    const searchButtonSelect =   searchForm.querySelector('button');
+
        if (e.target.checked) {
+          if(noRecipesinCal == 6){
+//console.log('number is 7')
          let caloriesCurrentRecipe = Math.floor(recipies[currentRecipe].recipe.calories / recipies[currentRecipe].recipe.yield);
-sevenDayContainer.innerHTML +=
-` <div class="recipe" id="${searchVal}-recipe-${currentRecipe}">
-${recipies[currentRecipe].recipe.label}
-<a href =${recipies[currentRecipe].recipe.url}> View recipe </a>
-<b> calories: </b> ${caloriesCurrentRecipe}
-<button type="button" class="button-remove-recipe" id="${searchVal}-recipe-${currentRecipe}" >Remove</button>
- </div>   `;
-} else {
+         sevenDayContainer.innerHTML +=
+         ` <div class="recipe" id="${searchVal}-recipe-${currentRecipe}" data-search="${searchVal}">
+         ${recipies[currentRecipe].recipe.label}
+         <a href =${recipies[currentRecipe].recipe.url}> View recipe </a>
+         <b> calories: </b> ${caloriesCurrentRecipe}
+         <button type="button" class="button-remove-recipe" id="${searchVal}-recipe-${currentRecipe}" >Remove</button>
+          </div>   `;
+
+          console.log('this is in the seven limit reached function');
+        Array.from(recipes).forEach(recipeCheck => {
+        if (recipeCheck.checked == false){
+        recipeCheck.disabled = true;
+        }
+        })
+        // disable search field
+         searchFormSelect.disabled = true;
+         searchButtonSelect.disabled = true;
+
+} else if (noRecipesinCal < 6){
+
+ //console.log('6 or less')
+ let caloriesCurrentRecipe = Math.floor(recipies[currentRecipe].recipe.calories / recipies[currentRecipe].recipe.yield);
+ sevenDayContainer.innerHTML +=
+ ` <div class="recipe" id="${searchVal}-recipe-${currentRecipe}" data-search="${searchVal}">
+ ${recipies[currentRecipe].recipe.label}
+ <a href =${recipies[currentRecipe].recipe.url}> View recipe </a>
+ <b> calories: </b> ${caloriesCurrentRecipe}
+ <button type="button" class="button-remove-recipe" id="${searchVal}-recipe-${currentRecipe}" >Remove</button>
+  </div>   `;
+}
+// close else if for number of recipes
+
+} else { // if target not checked
+// need to check if no. boxes
+if (noRecipesinCal == 7){
+  Array.from(recipes).forEach(recipeCheck => {
+  if (recipeCheck.disabled){
+    recipeCheck.disabled = false;
+  }
+  })
+  searchFormSelect.disabled = false;
+  searchButtonSelect.disabled = false;
+}
+
+
 const recipeId  = e.target.id;
 const sevenDayRecipe = document.querySelector(`#seven-day #${recipeId}`);
 if(sevenDayRecipe !== null ){
 sevenDayRecipe.remove();
 } //close if
 
-}
+} // close else checked
 }) // close event listener
 ) // close for each
 }; // close displayresults
@@ -98,16 +146,41 @@ removeRecipeButton.forEach(removeButton => removeButton.addEventListener('click'
 remE.srcElement.parentElement.remove();
 const recipeId = remE.target.id;
 const inputRecipe = document.querySelector(`.search-results-container #${recipeId}`);
-if (inputRecipe.checked = true){
-  inputRecipe.checked = false;
-};
+let currentSearchTerm = searchVal;   // need to get this from GLOBAL VARIABLE INSTEAD???
+let removeBoxSearchTerm = remE.srcElement.parentElement.dataset.search;
+
+if (currentSearchTerm === removeBoxSearchTerm ){
+  if (inputRecipe.checked = true){
+    inputRecipe.checked = false;
+  } // close checked if
+} //close term comparison if
 
 
-//console.log(tickBox);
+//})) // close event listener function. close parameter close for each
+if (removeRecipeButton.length == 7){
+const recipes = searchResultsContain.querySelectorAll('.recipe-checkbox input');
+searchForm.querySelector('input').disabled = false;
+searchForm.querySelector('button').disabled = false;
+Array.from(recipes).forEach(recipeCheck => {
+if (recipeCheck.disabled){
+  recipeCheck.disabled = false;
+} // close if
+}) // close foreach
+} // close if length 7
 
-}))
+})) //test
 
-  } else {
-    console.log('NO remove buttons'); // should this be removed???
-  }
-})
+} // close if removerecipebutton length greater than 0;
+}) // close mouseenter
+
+
+
+
+
+
+
+
+
+  // disabled unticked checkboxes in search
+
+  //disabled search bar
