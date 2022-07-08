@@ -13,6 +13,24 @@
 
 <form id="search-form" class="search-diets-form">
   <input type="text" placeholder="Search.." name="search">
+  <select name="healthList" id="healthList">
+    <option selected="selected" class="health-option">Health options</option>
+    <option class="health-option" value="dairy-free"> Dairy free </option>
+    <option class="health-option"  value="alcohol-free"> Alcohol free </option>
+    <option class="health-option"  value="egg-free"> Egg free </option>
+    <option class="health-option"  value="fish-free"> Fish free</option>
+    <option  class="health-option" value="low-sugar"> Low sugar </option>
+    <option  class="health-option" value="vegetarian"> Vegetarian </option>
+  </select>
+  <select name="caloriesList" id="caloriesList">
+    <option selected="selected">Max number of calories</option>
+    <option value="300"> 300 </option>
+    <option value="400"> 400 </option>
+    <option value="500"> 500 </option>
+    <option value="600"> 600 </option>
+    <option value="700"> 700 </option>
+    <option value="800"> 800 </option>
+  </select>
   <button type="submit">Search recipes</button>
   </form>
 

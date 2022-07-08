@@ -1,6 +1,10 @@
 
 const searchForm = document.querySelector('#search-form');
 const searchField  = document.querySelector('input[name="search"]');
+const healthDropdown = document.getElementById('healthList');
+const healthDropdownFirst = document.getElementById('healthList')[0].innerHTML;
+const caloriesList = document.getElementById('caloriesList');
+const caloriesDropdownFirst = document.getElementById('caloriesList')[0].innerHTML;
 const searchResultsContain = document.querySelector('.search-results-container');
 const sevenDayContainer = document.querySelector('.seven-day-container');
 
@@ -13,24 +17,34 @@ let searchFormSubmitted = (e) => {
   e.preventDefault();
   //let myresult = e.elements["search"].value;
 searchVal = searchField.value;
- //console.log(`this is the searchval: ${searchVal}`);
-searchResultsContain.innerHTML = '';
- dataRetrieve(searchVal);
 
+//get health option selection if selected
+const healthListOption = document.forms['search-form'].healthList.value;
+const maxNumberCalories = document.forms['search-form'].caloriesList.value;
+//console.log(healthListOption);
+
+
+searchResultsContain.innerHTML = '';
+ dataRetrieve(searchVal, healthListOption, maxNumberCalories);
 }
+
 
 
 //get input from search form
 searchForm.addEventListener('submit', searchFormSubmitted )
 
 // retrieve data
-const dataRetrieve = (searchVal) => {
+const dataRetrieve = (searchVal, healthListOption, maxNumberCalories) => {
   let requestOptions = {
     method: 'GET',
    redirect: 'follow'
   };
 
-  let urlToUse = `https://api.edamam.com/api/recipes/v2?type=public&q=${searchVal}&app_id=ca7d95d0&app_key=e0d18286b748e55ba5431e957ebab929&to=5`;
+const healthOption = healthDropdownFirst === healthListOption ? '' : `&health=${healthListOption}`;
+const caloriesAmount = caloriesDropdownFirst === maxNumberCalories ? '' : `&calories=${maxNumberCalories}`;
+console.log(caloriesAmount);
+
+  let urlToUse = `https://api.edamam.com/api/recipes/v2?type=public&q=${searchVal}&app_id=ca7d95d0&app_key=e0d18286b748e55ba5431e957ebab929&random=true&dishType=Main%20course${healthOption}${caloriesAmount}`;
 
 fetch(urlToUse, requestOptions)
  .then(response => response.text())
@@ -43,9 +57,11 @@ displayResults(hitsFromSearch, searchVal)
  })
 
  .catch(error => console.log('error', error));
-}
+}  //dataRetrieve closed
 
-//dataRetrieve();
+
+
+
 const displayResults = (recipies, searchVal) => {
 
 //console.log(`this is here`);
@@ -95,6 +111,11 @@ searchResultsContain.innerHTML +=
          searchFormSelect.disabled = true;
          searchButtonSelect.disabled = true;
 
+         // disable healthDropdown
+         healthList.disabled = true;
+         caloriesList.disabled = true;
+
+
 } else if (noRecipesinCal < 6){
 
  //console.log('6 or less')
@@ -119,6 +140,8 @@ if (noRecipesinCal == 7){
   })
   searchFormSelect.disabled = false;
   searchButtonSelect.disabled = false;
+  healthList.disabled = false;
+  caloriesList.disabled = false;
 }
 
 
@@ -161,6 +184,11 @@ if (removeRecipeButton.length == 7){
 const recipes = searchResultsContain.querySelectorAll('.recipe-checkbox input');
 searchForm.querySelector('input').disabled = false;
 searchForm.querySelector('button').disabled = false;
+
+// enable health and calorie dropdowns
+healthList.disabled = false;
+caloriesList.disabled = false;
+
 Array.from(recipes).forEach(recipeCheck => {
 if (recipeCheck.disabled){
   recipeCheck.disabled = false;
