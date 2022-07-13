@@ -11,8 +11,8 @@
 <body>
 <h1 class="main-title"> 7 day diet planner </h1>
 
-<form id="search-form" class="search-diets-form">
-  <input type="text" placeholder="Search.." name="search">
+<form id="search-form" class="search-diets-form" novalidate>
+  <input id="id1" type="text" placeholder="Search.." name="search" required>
   <select name="healthList" id="healthList">
     <option selected="selected" class="health-option">Health options</option>
     <option class="health-option" value="dairy-free"> Dairy free </option>
@@ -33,6 +33,7 @@
   </select>
   <button type="submit">Search recipes</button>
   </form>
+<b id="error-message"> </b>
 
 <main class="main-area">
 

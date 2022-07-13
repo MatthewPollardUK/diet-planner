@@ -7,27 +7,36 @@ const caloriesList = document.getElementById('caloriesList');
 const caloriesDropdownFirst = document.getElementById('caloriesList')[0].innerHTML;
 const searchResultsContain = document.querySelector('.search-results-container');
 const sevenDayContainer = document.querySelector('.seven-day-container');
+const searchErrorMessage = document.getElementById('error-message');
 
 let searchVal;
 const recipesInCal = [];
 
+console.log(searchField)
 
 
-
-let searchFormSubmitted = (e) => { //b1
+const searchFormSubmitted = (e) => {
   e.preventDefault();
-  //let myresult = e.elements["search"].value;
-searchVal = searchField.value;
+
+//searchVal = searchField.value;
+
 
 //get health option selection if selected
 const healthListOption = document.forms['search-form'].healthList.value;
 const maxNumberCalories = document.forms['search-form'].caloriesList.value;
-//console.log(healthListOption);
 
 
-searchResultsContain.innerHTML = '';
- dataRetrieve(searchVal, healthListOption, maxNumberCalories);
-} //b0
+   if (searchForm.checkValidity()) {
+     //document.getElementById("error-message").innerHTML = "input is ok";
+     searchVal = searchField.value;
+      searchResultsContain.innerHTML = '';
+     dataRetrieve(searchVal, healthListOption, maxNumberCalories);
+    searchErrorMessage.innerHTML = '';
+   } else {
+     searchErrorMessage.innerHTML = 'Search field must not be empty';
+   }
+
+} //close searchFormSubmitted
 
 
 
@@ -36,23 +45,30 @@ searchForm.addEventListener('submit', searchFormSubmitted )
 
 // retrieve data
 const dataRetrieve = (searchVal, healthListOption, maxNumberCalories) => { //b1
-  let requestOptions = { //b2
+  const requestOptions = { //b2
     method: 'GET',
    redirect: 'follow'
  }; //b1
+
+
+ console.log(`health list option: ${healthListOption}`);
+ console.log(`max number of calories: ${maxNumberCalories}`);
 
 const healthOption = healthDropdownFirst === healthListOption ? '' : `&health=${healthListOption}`;
 const caloriesAmount = caloriesDropdownFirst === maxNumberCalories ? '' : `&calories=${maxNumberCalories}`;
 console.log(caloriesAmount);
 
-  let urlToUse = `https://api.edamam.com/api/recipes/v2?type=public&q=${searchVal}&app_id=ca7d95d0&app_key=e0d18286b748e55ba5431e957ebab929&random=true&dishType=Main%20course${healthOption}${caloriesAmount}`;
+  const urlToUse = `https://api.edamam.com/api/recipes/v2?type=public&q=${searchVal}&app_id=ca7d95d0&app_key=e0d18286b748e55ba5431e957ebab929&random=true&dishType=Main%20course${healthOption}${caloriesAmount}`;
 
+
+
+//&from=0&to=4'   //&random=true
 fetch(urlToUse, requestOptions)
  .then(response => response.text())
  .then(result => { //b2
-let resultParsed = JSON.parse(result);
+const resultParsed = JSON.parse(result);
 //console.log(resultParsed.hits);
-let hitsFromSearch = resultParsed.hits;
+const hitsFromSearch = resultParsed.hits;
 
 displayResults(hitsFromSearch, searchVal)
 }) //b1
@@ -61,20 +77,26 @@ displayResults(hitsFromSearch, searchVal)
 }  //dataRetrieve closed // b0
 
 
-
-
 const displayResults = (recipies, searchVal) => { //b1
+let noOfRecipes;
+
+if (recipies.length >= 0 && recipies.length <= 4){
+  noOfRecipes = recipies.length;
+}else {
+  noOfRecipes = 5;
+}
+
 
 //check to see if any recipes in calendar, if they are, then need to make sure recipes arent duplicated
 
-for (var i = 0, len = 5; i < len; i++ ){ //b2+
+for (let i = 0; i < noOfRecipes; i++ ){ //b2+
 let caloriesRecipe = Math.floor(recipies[i].recipe.calories / recipies[i].recipe.yield);  //number
 //console.log(recipies[i]);
 
 
 searchResultsContain.innerHTML +=
 `<div> ${recipies[i].recipe.label}    <img src=${recipies[i].recipe.images.SMALL.url} width=${recipies[i].recipe.images.SMALL.width} height=${recipies[i].recipe.images.SMALL.height} > </div>
- <div> <b> Calories: </b> ${caloriesRecipe} <a href =${recipies[i].recipe.url}> View recipe </a> </div>
+ <div> <b> Calories: </b> ${caloriesRecipe} <a href ="${recipies[i].recipe.url}" target="_blank" > View recipe </a> </div>
  <div class="recipe-checkbox"> <input type="checkbox" data-checkbox="${i}" id="${searchVal}-recipe-${i}" name="recipe-${i}"> <label for="recipe-${i}"> Add to 7 day calendar </label> </div>`
 
 } // close for //b1
@@ -82,9 +104,9 @@ searchResultsContain.innerHTML +=
 
 
 
-  let resultsCheckboxes = document.querySelectorAll('.recipe-checkbox > input[type="checkbox"]');
+  const resultsCheckboxes = document.querySelectorAll('.recipe-checkbox > input[type="checkbox"]');
      resultsCheckboxes.forEach(recipeCheckbox => recipeCheckbox.addEventListener('change', (e) => { //b2
-  let currentRecipe = e.target.dataset.checkbox;
+  const currentRecipe = e.target.dataset.checkbox;
      const noRecipesinCal = sevenDayContainer.querySelectorAll('.recipe').length;
        const recipes = searchResultsContain.querySelectorAll('.recipe-checkbox input');
   const searchFormSelect =     searchForm.querySelector('input');
@@ -94,7 +116,7 @@ searchResultsContain.innerHTML +=
        if (e.target.checked) { //b3
           if(noRecipesinCal == 6){ //b4
 //console.log('number is 7')
-         let caloriesCurrentRecipe = Math.floor(recipies[currentRecipe].recipe.calories / recipies[currentRecipe].recipe.yield);
+         const caloriesCurrentRecipe = Math.floor(recipies[currentRecipe].recipe.calories / recipies[currentRecipe].recipe.yield);
          sevenDayContainer.innerHTML +=
          ` <div class="recipe" id="${searchVal}-recipe-${currentRecipe}" data-search="${searchVal}">
          ${recipies[currentRecipe].recipe.label}
@@ -126,7 +148,7 @@ searchResultsContain.innerHTML +=
 } else if (noRecipesinCal < 6){ //b4
 
  //console.log('6 or less')
- let caloriesCurrentRecipe = Math.floor(recipies[currentRecipe].recipe.calories / recipies[currentRecipe].recipe.yield);
+ const caloriesCurrentRecipe = Math.floor(recipies[currentRecipe].recipe.calories / recipies[currentRecipe].recipe.yield);
 //add hypens between words in recipe title
 const recipeLabel = recipies[currentRecipe].recipe.label;
 const dataTitleHypens = recipeLabel.replace(/[^A-Za-z0-9]/g, '-');
@@ -137,7 +159,7 @@ const dataTitleHypens = recipeLabel.replace(/[^A-Za-z0-9]/g, '-');
  sevenDayContainer.innerHTML +=
  ` <div class="recipe" id="${searchVal}-recipe-${currentRecipe}" data-search="${searchVal}" data-repTitle="${recipies[currentRecipe].recipe.label}">
  ${recipies[currentRecipe].recipe.label}
- <a href =${recipies[currentRecipe].recipe.url}> View recipe </a>
+ <a href ="${recipies[currentRecipe].recipe.url}" target="_blank"> View recipe </a>
  <b> calories: </b> ${caloriesCurrentRecipe} <button type="button" class="button-remove-recipe" data-repTitle="${recipies[currentRecipe].recipe.label}" data-titlehypens="${dataTitleHypens}" id="${searchVal}-recipe-${currentRecipe}" >Remove</button> </div>   `;
 
 
